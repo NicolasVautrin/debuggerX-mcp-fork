@@ -99,6 +99,6 @@ public class DebugSession {
     }
 
     public int getOriginIdByNewId(int newId) {
-        return packetIdMap.getOrDefault(newId, -1);
+        return packetIdMap.getOrDefault(newId, newId);
     }
 } 
