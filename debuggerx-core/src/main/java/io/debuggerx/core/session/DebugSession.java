@@ -52,7 +52,7 @@ public class DebugSession {
         this.jvmServerChannel = jvmServerChannel;
         this.debuggerChannels = new ConcurrentHashMap<>();
         this.handshakeCompleted = false;
-        this.jvmServerPacketId = new AtomicInteger(0);
+        this.jvmServerPacketId = new AtomicInteger(Integer.MAX_VALUE);
         this.packetIdMap = new ConcurrentHashMap<>();
     }
     
@@ -93,7 +93,7 @@ public class DebugSession {
     }
 
     public int getNewIdAndSaveOriginLink(int originId) {
-        int newId = jvmServerPacketId.incrementAndGet();
+        int newId = jvmServerPacketId.decrementAndGet();
         packetIdMap.put(newId, originId);
         return newId;
     }
