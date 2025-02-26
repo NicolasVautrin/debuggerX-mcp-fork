@@ -3,13 +3,17 @@ package io.debuggerx.core.session;
 
 import io.debuggerx.common.utils.ChannelUtils;
 import io.debuggerx.common.utils.SessionUtils;
+import io.debuggerx.protocol.packet.JdwpPacket;
+import io.debuggerx.protocol.packet.PacketSource;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -44,9 +48,21 @@ public class DebugSession {
     /**
      * 数据包id映射
      * key:全局唯一id
-     * value:原数据包id
+     * value:Pair<原数据包id, 原数据包Channel>
      */
-    private final Map<Integer, Integer> packetIdMap;
+    private final Map<Integer, Pair<Integer, PacketSource>> packetIdMap;
+    /**
+     * key:全局唯一id
+     * value:数据包
+     */
+    private final Map<Integer, JdwpPacket> packetMap;
+
+    /**
+     * 请求ID映射
+     * key:请求ID
+     * value:请求通道
+     */
+    private final Map<Integer, Set<PacketSource>> eventRequestIdSourceMap;
     public DebugSession(Channel jvmServerChannel) {
         this.sessionId = SessionUtils.generateSessionId();
         this.jvmServerChannel = jvmServerChannel;
@@ -54,6 +70,8 @@ public class DebugSession {
         this.handshakeCompleted = false;
         this.jvmServerPacketId = new AtomicInteger(Integer.MAX_VALUE);
         this.packetIdMap = new ConcurrentHashMap<>();
+        this.eventRequestIdSourceMap = new ConcurrentHashMap<>();
+        this.packetMap = new ConcurrentHashMap<>();
     }
     
     public void addDebugger(Channel debuggerChannel) {
@@ -77,28 +95,39 @@ public class DebugSession {
         }
         return removedChannelId;
     }
-    
-    public void broadcast(Object msg) {
-        // 只向活跃的channel发送
-        debuggerChannels.values().stream()
-                .filter(Channel::isActive)
-                .forEach(debuggerChannel -> {
-                    ChannelFuture future = debuggerChannel.writeAndFlush(msg);
-                    future.addListener(f -> {
-                        if (!f.isSuccess()) {
-                            log.error("Failed to forward packet to debugger", f.cause());
-                        }
-                    });
-                });
-    }
 
-    public int getNewIdAndSaveOriginLink(int originId) {
+    public int getNewIdAndSaveOriginLink(JdwpPacket packet, PacketSource originPacketSource) {
+        int originId = packet.getHeader().getId();
         int newId = jvmServerPacketId.decrementAndGet();
-        packetIdMap.put(newId, originId);
+        packetIdMap.put(newId, Pair.of(originId, originPacketSource));
+        packetMap.put(newId, packet);
         return newId;
     }
 
-    public int getOriginIdByNewId(int newId) {
-        return packetIdMap.getOrDefault(newId, newId);
+    public JdwpPacket findPacketByNewId(int newId) {
+        return packetMap.get(newId);
     }
-} 
+
+    public Pair<Integer, PacketSource> getOriginIdByNewId(int newId) {
+        return packetIdMap.getOrDefault(newId, null);
+    }
+
+    public void cacheRequestIdSourceChannel(Integer requestId, PacketSource packetSource, JdwpPacket packet) {
+        if (!packet.getHeader().isCommand()) {
+            // 如果是回复包 找到原始的命令包 找到原始的命令包来源
+            Pair<Integer, PacketSource> packetSourcePair = packetIdMap.get(packet.getHeader().getId());
+            packetSource = packetSourcePair.getRight();
+        }
+        eventRequestIdSourceMap.computeIfAbsent(requestId, id -> new CopyOnWriteArraySet<>());
+        Set<PacketSource> sourceChannels = eventRequestIdSourceMap.get(requestId);
+        if (sourceChannels.contains(packetSource)) {
+            return;
+        }
+        sourceChannels.add(packetSource);
+    }
+
+    public Set<PacketSource> findSourceChannelByRequestId(Integer requestId) {
+        return eventRequestIdSourceMap.get(requestId);
+    }
+
+}

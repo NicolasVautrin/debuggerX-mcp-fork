@@ -2,16 +2,30 @@ package io.debuggerx.core.service;
 
 import io.debuggerx.common.enums.ConnectionType;
 import io.debuggerx.common.utils.ChannelUtils;
+import io.debuggerx.common.utils.CollectionUtils;
+import io.debuggerx.core.processor.CommandProcessor;
+import io.debuggerx.core.processor.registry.CommandProcessorRegistry;
+import io.debuggerx.core.processor.registry.EventProcessorRegistry;
 import io.debuggerx.core.session.DebugSession;
 import io.debuggerx.core.session.SessionManager;
+import io.debuggerx.protocol.enums.CommandIdentifier;
 import io.debuggerx.protocol.packet.JdwpPacket;
+import io.debuggerx.protocol.packet.PacketSource;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 调试服务
  * 处理调试目标与调试器之间的通信
+ *
  * @author ouwu
  */
 @Slf4j
@@ -19,6 +33,9 @@ public class DebuggerService {
 
     private static volatile DebuggerService instance;
     private final SessionManager sessionManager = SessionManager.getInstance();
+
+    private final EventProcessorRegistry eventProcessors = new EventProcessorRegistry();
+    private final CommandProcessorRegistry commandProcessors = new CommandProcessorRegistry(eventProcessors);
 
     private DebuggerService() {
         if (instance != null) {
@@ -36,52 +53,48 @@ public class DebuggerService {
         }
         return instance;
     }
-    
-    public void handleJvmServerPacket(JdwpPacket packet) {
-        DebugSession session = sessionManager.findJvmServerSession();
-        if (session == null) {
-            log.error("No session found for jvm server session. Is command packet?:{}", packet.getHeader().isCommand());
-            return;
-        }
-        // 根据包全局ID取到原始包ID，塞入原包进行回复
-        int newId = packet.getHeader().getId();
-        int originId = session.getOriginIdByNewId(packet.getHeader().getId());
-        packet.getHeader().setId(originId);
-        log.info("[JvmServer] Replay packet to debugger.OriginId:{},NewId:{}", originId, newId);
-        // 广播给所有连接的调试器
-        session.broadcast(packet);
+
+    public List<PacketSource> handlePacket(PacketSource packetSource, JdwpPacket packet, DebugSession session) {
+        Pair<Integer, PacketSource> origin = session.getOriginIdByNewId(packet.getHeader().getId());
+
+        return Objects.isNull(origin)
+                ? handleNewPacket(packetSource, packet, session)
+                : handleResponsePacket(packet, origin);
     }
-    
-    public void handleDebuggerProxyPacket(Channel channel, JdwpPacket packet) {
-        if (packet.getHeader().isDisposeCommand()) {
-            log.info("[Dispose command] Dispose command received, closing debugger channel: {}", channel);
-            channel.close();
-            return;
-        }
-        // 查找对应的调试目标会话并转发
-        DebugSession session = sessionManager.findJvmServerSession();
-        // 检查channel状态
-        if (session.getJvmServerChannel().isActive()) {
-            // 根据原始包ID 取全局唯一ID塞入包中并保存关联关系
-            int originId = packet.getHeader().getId();
-            int newId = session.getNewIdAndSaveOriginLink(packet.getHeader().getId());
-            packet.getHeader().setId(newId);
-            log.info("[ProxyDebugger] Sending packet to jvm server.OriginId:{},NewId:{}", originId, newId);
-            ChannelFuture future = session.getJvmServerChannel().writeAndFlush(packet);
-            future.addListener(f -> {
-                if (!f.isSuccess()) {
-                    log.error("[JvmServer]Failed to forward packet to jvm server", f.cause());
-                }
-            });
-        }
+
+    private List<PacketSource> handleNewPacket(PacketSource source, JdwpPacket packet, DebugSession session) {
+        // 来源数据包不存在 判断当前数据包是否是特殊事件
+        int newId = session.getNewIdAndSaveOriginLink(packet, source);
+        packet.getHeader().setId(newId);
+        cacheRequestId(source, packet);
+
+        return extractEventSources(packet, session);
     }
-    
+
+    private List<PacketSource> handleResponsePacket(JdwpPacket packet, Pair<Integer, PacketSource> origin) {
+        // 来源数据包存在 即当前数据包为回复包
+        packet.getHeader().setId(origin.getLeft());
+        return Collections.singletonList(origin.getRight());
+    }
+
+    private List<PacketSource> extractEventSources(JdwpPacket packet, DebugSession session) {
+        if (CollectionUtils.isEmpty(packet.getRequestIds())) {
+            return Collections.emptyList();
+        }
+
+        return packet.getRequestIds().stream()
+                .map(session::findSourceChannelByRequestId)
+                .filter(Objects::nonNull)
+                .flatMap(Set::stream)
+                .collect(Collectors.toList());
+    }
+
+
     public void handleHandshake(Channel channel, ConnectionType connectionType) {
         switch (connectionType) {
             case JVM_SERVER:
                 DebugSession session = sessionManager.createJvmServerSession(channel);
                 session.setHandshakeCompleted(true);
-                log.info("[JvmServerHandShake] Jvm server handshake completed: {}", session.getSessionId());
                 break;
             case DEBUGGER_PROXY:
                 DebugSession debugSession = sessionManager.findJvmServerSession();
@@ -92,7 +105,7 @@ public class DebuggerService {
                 break;
         }
     }
-    
+
     public void handleDisconnect(Channel channel, ConnectionType connectionType) {
         DebugSession jvmServerSession = sessionManager.findJvmServerSession();
         switch (connectionType) {
@@ -110,4 +123,54 @@ public class DebuggerService {
                 break;
         }
     }
-} 
+
+    /**
+     * 只有与事件请求（Event Request）相关的命令和事件数据会包含 requestId
+     * 命令包包含
+     * 1. EventRequest：Command Set (15) Clear Command (2)
+     * 回复包包含
+     * 1. EventRequest：Command Set (15) Command (1)
+     * @param packetSource 数据包来源
+     * @param packet 数据包
+     */
+    public void cacheRequestId(PacketSource packetSource, JdwpPacket packet) {
+        // 处理回复包的命令集映射
+        if (!packet.getHeader().isCommand()) {
+            mapResponseCommand(packet);
+        }
+
+        // 获取命令处理器
+        CommandIdentifier commandId = CommandIdentifier.of(packet.getHeader());
+        CommandProcessor processor = commandProcessors.getProcessor(commandId);
+        if (processor == null) {
+            // 无需处理
+            return;
+        }
+
+        // 执行命令处理
+        ByteBuffer buffer = ByteBuffer.wrap(packet.getData());
+        List<Integer> requestIds = processor.process(buffer, packet);
+        packet.setRequestIds(requestIds);
+
+        // 缓存结果
+        cacheRequestIds(packetSource, packet, requestIds);
+    }
+
+    private void mapResponseCommand(JdwpPacket packet) {
+        DebugSession session = SessionManager.getInstance().findJvmServerSession();
+        JdwpPacket originPacket = session.findPacketByNewId(packet.getHeader().getId());
+        packet.getHeader().setCommandSet(originPacket.getHeader().getCommandSet());
+        packet.getHeader().setCommand(originPacket.getHeader().getCommand());
+    }
+
+    private void cacheRequestIds(PacketSource source, JdwpPacket packet, List<Integer> requestIds) {
+        if (CollectionUtils.isEmpty(requestIds)) {
+            return;
+        }
+
+        DebugSession session = sessionManager.findJvmServerSession();
+        requestIds.forEach(id ->
+                session.cacheRequestIdSourceChannel(id, source, packet)
+        );
+    }
+}

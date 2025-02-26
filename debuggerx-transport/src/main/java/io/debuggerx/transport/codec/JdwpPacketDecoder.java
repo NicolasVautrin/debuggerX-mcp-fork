@@ -28,8 +28,7 @@ public class JdwpPacketDecoder extends ByteToMessageDecoder {
                 byte[] handshake = new byte[JdwpConstants.HANDSHAKE_BYTES];
                 in.readBytes(handshake);
                 String handshakeStr = new String(handshake);
-                log.debug("[DecodeHandShake] Received bytes before handshake: {}", handshakeStr);
-                
+
                 if (handshakeStr.equals(JdwpConstants.HANDSHAKE_STRING)) {
                     handshakeCompleted = true;
                     log.info("[DecodeHandShake] Handshake completed for channel: {}", ctx.channel());
@@ -37,11 +36,6 @@ public class JdwpPacketDecoder extends ByteToMessageDecoder {
                 }
             }
             return;
-        }
-        
-        // 打印数据包解码过程
-        if (in.readableBytes() > 0) {
-            log.debug("[DecodeHandle] Decoding packet, readable bytes: {}", in.readableBytes());
         }
         
         if (in.readableBytes() < JdwpConstants.HEADER_LENGTH) {
@@ -65,8 +59,7 @@ public class JdwpPacketDecoder extends ByteToMessageDecoder {
         // 读取数据部分
         byte[] data = new byte[dataLength];
         in.readBytes(data);
-        log.debug("[DecodeHandle] Decoded data length: {}", data.length);
-        
+
         out.add(new JdwpPacket(header, data));
     }
 }

@@ -60,17 +60,9 @@ public class JdwpHeader {
             // 命令包: commandSet(1) + command(1)
             header.commandSet = buffer.get();
             header.command = buffer.get();
-            log.debug("[DecodeHandle] Decoded command header: length={}, id={}, flags={}, commandSet={}, command={}",
-                    header.getLength(), header.getId(), header.getFlags(),
-                    header.getCommandSet(), header.getCommand());
-
         } else {
             // 回复包: errorCode(2)
             header.errorCode = buffer.getShort();
-            log.debug("[DecodeHandle] Decoded reply header: length={}, id={}, flags={}, errorCode={}",
-                    header.getLength(), header.getId(), header.getFlags(),
-                    header.getErrorCode());
-
         }
         
         return header;

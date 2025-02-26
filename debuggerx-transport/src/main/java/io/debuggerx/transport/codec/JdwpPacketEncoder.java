@@ -17,6 +17,5 @@ public class JdwpPacketEncoder extends MessageToByteEncoder<JdwpPacket> {
     protected void encode(ChannelHandlerContext ctx, JdwpPacket packet, ByteBuf out) {
         byte[] data = packet.toBytes();
         out.writeBytes(data);
-        log.debug("[EncoderHandle] Packet: data.length={}, packet.id={}", data.length, packet.getHeader().getId());
     }
 }

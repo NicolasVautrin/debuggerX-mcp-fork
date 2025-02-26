@@ -1,7 +1,9 @@
 package io.debuggerx.protocol.packet;
 
-import lombok.Data;
 import io.debuggerx.common.constants.JdwpConstants;
+import lombok.Data;
+
+import java.util.List;
 
 /**
  * JDWP协议数据包
@@ -12,7 +14,7 @@ import io.debuggerx.common.constants.JdwpConstants;
 public class JdwpPacket {
     private JdwpHeader header;
     private byte[] data;
-    
+    private List<Integer> requestIds;
     public JdwpPacket(JdwpHeader header, byte[] data) {
         this.header = header;
         this.data = data;
@@ -34,4 +36,4 @@ public class JdwpPacket {
 
         return bytes;
     }
-} 
+}

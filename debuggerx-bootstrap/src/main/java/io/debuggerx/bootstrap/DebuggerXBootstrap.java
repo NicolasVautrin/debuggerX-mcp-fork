@@ -57,18 +57,12 @@ public class DebuggerXBootstrap {
         // 配置日志
         configureLogging();
 
-        log.info("[Bootstrap] Starting DebuggerX...");
-
         try {
             // 加载配置
-            log.info("[Bootstrap] Loading configuration...");
             DebuggerConfig config = BootstrapConfig.load();
-            log.info("[Bootstrap] Configuration loaded: " + config);
 
             // 创建并启动服务器
-            log.info("[Bootstrap] Creating proxy server...");
             DebugProxyServer server = new DebugProxyServer(config);
-            log.info("[Bootstrap] Starting proxy server...");
             server.start();
         } catch (InterruptedException e) {
             log.error("[Bootstrap] Failed to start DebuggerX: " + e.getMessage());

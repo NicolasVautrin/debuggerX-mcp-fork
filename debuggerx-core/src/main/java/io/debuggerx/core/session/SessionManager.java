@@ -1,7 +1,9 @@
 package io.debuggerx.core.session;
 
 import io.debuggerx.common.exception.DebuggerException;
+import io.debuggerx.protocol.jdwp.IdSizes;
 import io.netty.channel.Channel;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
@@ -15,20 +17,25 @@ import java.util.concurrent.ConcurrentHashMap;
 public class SessionManager {
     private static final SessionManager INSTANCE = new SessionManager();
     private final Map<Channel, DebugSession> sessions = new ConcurrentHashMap<>();
+    @Getter
+    private IdSizes idSizes;
     
     private SessionManager() {}
     
     public static SessionManager getInstance() {
         return INSTANCE;
     }
-    
+
+    public void setIdSizes(IdSizes idSizes) {
+        this.idSizes = idSizes;
+    }
+
     /**
      * 创建jvm服务端调试会话
      */
     public DebugSession createJvmServerSession(Channel jvmServerChannel) {
         DebugSession session = new DebugSession(jvmServerChannel);
         sessions.put(jvmServerChannel, session);
-        log.info("Created jvm server session: {}", session.getSessionId());
         return session;
     }
     
