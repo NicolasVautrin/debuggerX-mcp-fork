@@ -21,3 +21,12 @@ DebuggerX is a Java debugging proxy tool that allows multiple debuggers to conne
 - **debuggerx-core**: 核心业务逻辑和会话管理
 - **debuggerx-transport**: 网络传输层实现
 - **debuggerx-bootstrap**: 启动和配置管理
+
+## 使用方法
+
+默认与提供服务的jvm部署在一起（JDWP端口默认为**5005** 代理端口默认为**55005**）
+
+```shell
+nohup java -jar debuggerx-bootstrap-1.0-SNAPSHOT.jar > ~/logs/debuggerX.log 2>&1 &
+```
+
