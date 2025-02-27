@@ -17,17 +17,14 @@ import java.util.List;
  */
 public class MonitorWaitEventProcessor implements EventProcessor {
 
-    private EventKind eventKind;
-
     @Override
     public boolean supports(EventKind eventKind) {
-        this.eventKind = eventKind;
-        return eventKind == EventKind.MONITOR_WAIT || 
+        return eventKind == EventKind.MONITOR_WAIT ||
                eventKind == EventKind.MONITOR_WAITED;
     }
 
     @Override
-    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) {
+    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) {
         int requestId = buffer.getInt();
 
         ThreadId.read(buffer, idSizes);

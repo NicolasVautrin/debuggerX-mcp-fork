@@ -23,7 +23,7 @@ public class ThreadLifecycleEventProcessor implements EventProcessor {
     }
 
     @Override
-    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) {
+    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) {
         //int	requestID	Request that generated event (or 0 if this event is automatically generated.
         int requestId = buffer.getInt();
         //threadID	thread  Initial thread

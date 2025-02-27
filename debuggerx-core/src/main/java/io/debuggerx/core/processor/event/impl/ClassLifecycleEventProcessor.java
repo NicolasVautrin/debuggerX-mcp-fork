@@ -17,16 +17,14 @@ import java.util.List;
  * @author ouwu
  */
 public class ClassLifecycleEventProcessor implements EventProcessor {
-    private EventKind eventKind;
     @Override
     public boolean supports(EventKind eventKind) {
-        this.eventKind = eventKind;
-        return eventKind == EventKind.CLASS_PREPARE || 
+        return eventKind == EventKind.CLASS_PREPARE ||
                eventKind == EventKind.CLASS_UNLOAD;
     }
 
     @Override
-    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) {
+    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) {
         int requestId = buffer.getInt();
         
         if (eventKind == EventKind.CLASS_PREPARE) {

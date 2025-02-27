@@ -25,8 +25,9 @@ public interface EventProcessor {
      * 处理事件
      * @param buffer data
      * @param idSizes idSizes
+     * @param eventKind eventKind
      * @return requestIds
      * @throws DebuggerException e
      */
-    List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) throws DebuggerException;
+    List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) throws DebuggerException;
 }

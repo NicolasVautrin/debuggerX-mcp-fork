@@ -23,7 +23,7 @@ public class ExceptionEventProcessor implements EventProcessor {
     }
 
     @Override
-    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) {
+    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) {
         int requestId = buffer.getInt();
         ThreadId.read(buffer, idSizes);
         Location.read(buffer, idSizes);

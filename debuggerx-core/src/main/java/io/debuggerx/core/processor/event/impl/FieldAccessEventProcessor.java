@@ -14,16 +14,14 @@ import java.util.List;
  * @author ouwu
  */
 public class FieldAccessEventProcessor implements EventProcessor {
-    private EventKind eventKind;
     @Override
     public boolean supports(EventKind eventKind) {
-        this.eventKind = eventKind;
         return eventKind == EventKind.FIELD_ACCESS ||
                eventKind == EventKind.FIELD_MODIFICATION;
     }
 
     @Override
-    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes) {
+    public List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) {
         int requestId = buffer.getInt();
         ThreadId.read(buffer, idSizes);
         Location.read(buffer, idSizes);

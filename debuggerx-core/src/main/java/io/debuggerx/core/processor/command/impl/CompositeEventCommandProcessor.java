@@ -47,7 +47,7 @@ public class CompositeEventCommandProcessor implements CommandProcessor {
             }
 
             EventProcessor eventProcessor = eventProcessors.getProcessor(event).orElseThrow(() -> new DebuggerException("UnKnow Event."));
-            List<Integer> ids = eventProcessor.processEvent(byteBuffer, SessionManager.getInstance().getIdSizes());
+            List<Integer> ids = eventProcessor.processEvent(byteBuffer, SessionManager.getInstance().getIdSizes(), event);
             if (!CollectionUtils.isEmpty(ids)) {
                 requestIds.addAll(ids);
             }
