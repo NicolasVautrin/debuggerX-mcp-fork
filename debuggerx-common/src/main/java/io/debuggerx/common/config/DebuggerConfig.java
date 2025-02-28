@@ -2,6 +2,7 @@ package io.debuggerx.common.config;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.FieldNameConstants;
 
 /**
  * debug代理配置
@@ -10,7 +11,12 @@ import lombok.Data;
  */
 @Data
 @Builder
+@FieldNameConstants
 public class DebuggerConfig {
+    /**
+     * 提供调试功能jvm服务地址
+     */
+    private String jvmServerHost;
     /**
      * 提供调试功能jvm服务端口
      */
@@ -22,6 +28,7 @@ public class DebuggerConfig {
     
     public static DebuggerConfig getDefault() {
         return DebuggerConfig.builder()
+                .jvmServerHost("localhost")
                 .jvmServerPort(5005)
                 .debuggerProxyPort(55005)
                 .build();

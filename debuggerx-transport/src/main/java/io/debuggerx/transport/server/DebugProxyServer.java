@@ -58,7 +58,7 @@ public class DebugProxyServer {
     public ChannelFuture startJvmClient() throws InterruptedException {
         // 连接JVM
         Bootstrap jvmClient = createClientBootstrap(jvmClientEventGroup);
-        ChannelFuture jvmClientFuture = jvmClient.connect("localhost", config.getJvmServerPort()).sync();
+        ChannelFuture jvmClientFuture = jvmClient.connect(config.getJvmServerHost(), config.getJvmServerPort()).sync();
 
         // 只监听被调试程序的连接状态
         jvmClientFuture.channel().closeFuture().addListener(future -> log.info("[JvmClient] disconnected, shutting down jvm client..."));

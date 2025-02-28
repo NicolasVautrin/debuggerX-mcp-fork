@@ -10,6 +10,7 @@ import io.debuggerx.bootstrap.config.BootstrapConfig;
 import io.debuggerx.common.config.DebuggerConfig;
 import io.debuggerx.transport.server.DebugProxyServer;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import static org.slf4j.Logger.ROOT_LOGGER_NAME;
@@ -61,12 +62,32 @@ public class DebuggerXBootstrap {
             // 加载配置
             DebuggerConfig config = BootstrapConfig.load();
 
+            // 全局配置覆盖
+            overrideConfig(config);
+
             // 创建并启动服务器
             DebugProxyServer server = new DebugProxyServer(config);
             server.start();
         } catch (InterruptedException e) {
             log.error("[Bootstrap] Failed to start DebuggerX: " + e.getMessage());
             Thread.currentThread().interrupt();
+        }
+    }
+
+    private static void overrideConfig(DebuggerConfig config) {
+        String jvmServerHost = System.getProperty(DebuggerConfig.Fields.jvmServerHost);
+        if (StringUtils.isNotEmpty(jvmServerHost)) {
+            config.setJvmServerHost(jvmServerHost);
+        }
+
+        String jvmServerPort = System.getProperty(DebuggerConfig.Fields.jvmServerPort);
+        if (StringUtils.isNotEmpty(jvmServerPort)) {
+            config.setJvmServerPort(Integer.parseInt(jvmServerPort));
+        }
+
+        String debuggerProxyPort = System.getProperty(DebuggerConfig.Fields.debuggerProxyPort);
+        if (StringUtils.isNotEmpty(debuggerProxyPort)) {
+            config.setJvmServerPort(Integer.parseInt(debuggerProxyPort));
         }
     }
 }

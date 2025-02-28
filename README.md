@@ -22,6 +22,11 @@ DebuggerX is a Java debugging proxy tool that allows multiple debuggers to conne
 - **debuggerx-transport**: 网络传输层实现
 - **debuggerx-bootstrap**: 启动和配置管理
 
+## 使用场景
+
+- 多人开发时竞争同一个remote debug端口，经常需要等待别人的释放。部署debuggerX可支持多人同时断点，无惧等待
+- 服务器断点端口不对外开放，无法使用remote debug。将debuggerX部署在跳板机中与业务服务断点端口连接，客户端通过连接debuggerX可实现断点
+
 ## 使用方法
 
 默认与提供服务的jvm部署在一起（JDWP端口默认为**5005** 代理端口默认为**55005**）
@@ -29,4 +34,16 @@ DebuggerX is a Java debugging proxy tool that allows multiple debuggers to conne
 ```shell
 nohup java -jar debuggerx-bootstrap-1.0-SNAPSHOT.jar > ~/logs/debuggerX.log 2>&1 &
 ```
+
+### 可自定义参数
+
+```shell
+# 提供调试功能jvm服务地址
+-DjvmServerHost=localhost
+# 提供调试功能jvm服务端口
+-DjvmServerPort=5005
+# 调试器代理端口
+-DdebuggerProxyPort=55005
+```
+
 
