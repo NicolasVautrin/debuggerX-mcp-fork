@@ -3,6 +3,7 @@ package io.debuggerx.transport.handler;
 import io.debuggerx.common.constants.JdwpConstants;
 import io.debuggerx.common.enums.ConnectionType;
 import io.debuggerx.core.service.DebuggerService;
+import io.debuggerx.core.session.SessionManager;
 import io.debuggerx.core.strategy.ConnectionHandlerStrategy;
 import io.debuggerx.core.strategy.impl.DebuggerProxyStrategy;
 import io.debuggerx.core.strategy.impl.JvmServerStrategy;
@@ -78,6 +79,12 @@ public class DebugProxyHandler extends ChannelInboundHandlerAdapter {
     }
     
     private void handlePacket(ChannelHandlerContext ctx, JdwpPacket packet) {
+        log.info("isCommand:{} originId:{} CommandSet:{} Command:{}",
+                packet.getHeader().isCommand(),
+                packet.getHeader().isCommand() ? packet.getHeader().getId() : SessionManager.getInstance().findJvmServerSession().getOriginIdByNewId(packet.getHeader().getId()).getLeft(),
+                packet.getHeader().getCommandSet(),
+                packet.getHeader().getCommand());
+
         // 前置处理
         execPreprocessor(ctx, packet);
 

@@ -31,4 +31,20 @@ public class JdwpConstants {
      * JDWP回复包标志
      */
     public static final byte FLAG_REPLY_PACKET = (byte) 0x80;
+    /**
+     * 命令包标志
+     */
+    public static final byte FLAG_COMMAND = (byte) 0;
+
+    /**
+     * EVENT_REQUEST_COMMAND_SET
+     */
+    public static final byte EVENT_REQUEST_COMMAND_SET = (byte) 15;
+    /**
+     * CLEAR_ALL_BREAK_POINT_COMMAND
+     */
+    public static final byte CLEAR_ALL_BREAK_POINT_COMMAND = (byte) 3;
+
+
+
 }

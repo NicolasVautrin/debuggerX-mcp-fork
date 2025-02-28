@@ -15,6 +15,11 @@ import static io.debuggerx.protocol.enums.CommandType.REPLY;
 public enum CommandIdentifier {
 
     /**
+     * 释放命令包
+     */
+    DISPOSE_COMMAND(1, 6, COMMAND),
+
+    /**
      * 动态获取目标虚拟机（JVM）运行时关键标识符的字节长度
      */
     ID_SIZES_REPLY(1, 7, REPLY),

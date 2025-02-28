@@ -9,7 +9,6 @@ import io.debuggerx.core.strategy.ConnectionHandlerStrategy;
 import io.debuggerx.protocol.packet.JdwpPacket;
 import io.debuggerx.protocol.packet.PacketSource;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,12 +49,7 @@ public class JvmServerStrategy implements ConnectionHandlerStrategy {
         channels.stream()
                 .filter(Channel::isActive)
                 .forEach(debuggerChannel -> {
-                    ChannelFuture future = debuggerChannel.writeAndFlush(msg);
-                    future.addListener(f -> {
-                        if (!f.isSuccess()) {
-                            log.error("Failed to forward packet to debugger", f.cause());
-                        }
-                    });
+                    debuggerChannel.writeAndFlush(msg);
                 });
     }
 

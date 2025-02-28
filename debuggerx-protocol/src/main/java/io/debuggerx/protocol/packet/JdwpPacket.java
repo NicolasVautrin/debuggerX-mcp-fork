@@ -36,4 +36,14 @@ public class JdwpPacket {
 
         return bytes;
     }
+
+    public static JdwpPacket createClearAllBreakpointsPacket() {
+        JdwpHeader jdwpHeader = new JdwpHeader();
+        jdwpHeader.setId(888);
+        jdwpHeader.setLength(JdwpConstants.HEADER_LENGTH);
+        jdwpHeader.setCommandSet(JdwpConstants.EVENT_REQUEST_COMMAND_SET);
+        jdwpHeader.setCommand(JdwpConstants.CLEAR_ALL_BREAK_POINT_COMMAND);
+        jdwpHeader.setFlags(JdwpConstants.FLAG_COMMAND);
+        return new JdwpPacket(jdwpHeader, null);
+    }
 }

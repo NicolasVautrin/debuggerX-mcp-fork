@@ -25,6 +25,7 @@ public class DebuggerProxyStrategy implements ConnectionHandlerStrategy {
     public void handleDebuggerProxyPacket(Channel channel, JdwpPacket packet, DebuggerService service) {
         if (packet.getHeader().isDisposeCommand()) {
             log.info("[Dispose command] Dispose command received, closing debugger channel: {}", channel);
+            sendClearAllBreakpointsCommand(channel);
             channel.close();
             return;
         }
@@ -33,6 +34,7 @@ public class DebuggerProxyStrategy implements ConnectionHandlerStrategy {
         // 检查channel状态
         if (session.getJvmServerChannel().isActive()) {
             service.handlePacket(new PacketSource(ConnectionType.DEBUGGER_PROXY, channel), packet, session);
+
             ChannelFuture future = session.getJvmServerChannel().writeAndFlush(packet);
             future.addListener(f -> {
                 if (!f.isSuccess()) {
@@ -40,5 +42,13 @@ public class DebuggerProxyStrategy implements ConnectionHandlerStrategy {
                 }
             });
         }
+    }
+
+    private void sendClearAllBreakpointsCommand(Channel channel) {
+        DebugSession session = SessionManager.getInstance().findJvmServerSession();
+        JdwpPacket packet = JdwpPacket.createClearAllBreakpointsPacket();
+        int newId = session.getNewIdAndSaveOriginLink(packet, new PacketSource(ConnectionType.DEBUGGER_PROXY, channel));
+        packet.getHeader().setId(newId);
+        session.getJvmServerChannel().writeAndFlush(packet);
     }
 }
