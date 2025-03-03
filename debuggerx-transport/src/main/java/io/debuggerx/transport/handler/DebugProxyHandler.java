@@ -84,6 +84,7 @@ public class DebugProxyHandler extends ChannelInboundHandlerAdapter {
                 packet.getHeader().isCommand() ? packet.getHeader().getId() : SessionManager.getInstance().findJvmServerSession().getOriginIdByNewId(packet.getHeader().getId()).getLeft(),
                 packet.getHeader().getCommandSet(),
                 packet.getHeader().getCommand());
+        log.info("packet:{}", packet);
 
         // 前置处理
         execPreprocessor(ctx, packet);

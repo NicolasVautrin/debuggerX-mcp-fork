@@ -3,10 +3,12 @@ package io.debuggerx.core.session;
 
 import io.debuggerx.common.utils.ChannelUtils;
 import io.debuggerx.common.utils.SessionUtils;
+import io.debuggerx.protocol.packet.BreakpointRequestRelation;
 import io.debuggerx.protocol.packet.JdwpPacket;
 import io.debuggerx.protocol.packet.PacketSource;
 import io.netty.channel.Channel;
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -56,13 +58,20 @@ public class DebugSession {
      * value:数据包
      */
     private final Map<Integer, JdwpPacket> packetMap;
-
     /**
      * 请求ID映射
      * key:请求ID
      * value:请求通道
      */
     private final Map<Integer, Set<PacketSource>> eventRequestIdSourceMap;
+    /**
+     * 客户端断点类型
+     * key: 客户端channel
+     * value: 断点-requestId
+     */
+    @Getter
+    private final Map<Channel, Set<BreakpointRequestRelation>> breakpointRequestMap;
+
     public DebugSession(Channel jvmServerChannel) {
         this.sessionId = SessionUtils.generateSessionId();
         this.jvmServerChannel = jvmServerChannel;
@@ -72,8 +81,9 @@ public class DebugSession {
         this.packetIdMap = new ConcurrentHashMap<>();
         this.eventRequestIdSourceMap = new ConcurrentHashMap<>();
         this.packetMap = new ConcurrentHashMap<>();
+        this.breakpointRequestMap = new ConcurrentHashMap<>();
     }
-    
+
     public void addDebugger(Channel debuggerChannel) {
         debuggerChannels.put(ChannelUtils.getDebugChannelId(debuggerChannel), debuggerChannel);
     }

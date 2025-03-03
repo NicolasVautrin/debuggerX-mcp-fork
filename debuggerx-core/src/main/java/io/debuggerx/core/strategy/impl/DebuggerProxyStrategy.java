@@ -1,16 +1,20 @@
 package io.debuggerx.core.strategy.impl;
 
 import io.debuggerx.common.enums.ConnectionType;
+import io.debuggerx.common.utils.CollectionUtils;
 import io.debuggerx.core.service.DebuggerService;
 import io.debuggerx.core.session.DebugSession;
 import io.debuggerx.core.session.SessionManager;
 import io.debuggerx.core.strategy.ConnectionHandlerStrategy;
+import io.debuggerx.protocol.packet.BreakpointRequestRelation;
 import io.debuggerx.protocol.packet.JdwpPacket;
 import io.debuggerx.protocol.packet.PacketSource;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Set;
 
 /**
  * @author ouwu
@@ -46,9 +50,18 @@ public class DebuggerProxyStrategy implements ConnectionHandlerStrategy {
 
     private void sendClearAllBreakpointsCommand(Channel channel) {
         DebugSession session = SessionManager.getInstance().findJvmServerSession();
-        JdwpPacket packet = JdwpPacket.createClearAllBreakpointsPacket();
-        int newId = session.getNewIdAndSaveOriginLink(packet, new PacketSource(ConnectionType.DEBUGGER_PROXY, channel));
-        packet.getHeader().setId(newId);
-        session.getJvmServerChannel().writeAndFlush(packet);
+
+        Set<BreakpointRequestRelation> breakpointRequestRelations = session.getBreakpointRequestMap().get(channel);
+        if (CollectionUtils.isEmpty(breakpointRequestRelations)) {
+            return;
+        }
+
+        for (BreakpointRequestRelation breakpointRequestRelation : breakpointRequestRelations) {
+            JdwpPacket packet = JdwpPacket.createClearBreakpointsPacket(breakpointRequestRelation.toByteArray());
+            int newId = session.getNewIdAndSaveOriginLink(packet, new PacketSource(ConnectionType.DEBUGGER_PROXY, channel));
+            packet.getHeader().setId(newId);
+            session.getJvmServerChannel().writeAndFlush(packet);
+        }
     }
+
 }

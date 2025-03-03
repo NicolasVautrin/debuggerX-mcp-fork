@@ -41,9 +41,9 @@ public class JdwpConstants {
      */
     public static final byte EVENT_REQUEST_COMMAND_SET = (byte) 15;
     /**
-     * CLEAR_ALL_BREAK_POINT_COMMAND
+     * CLEAR_BREAK_POINT_COMMAND
      */
-    public static final byte CLEAR_ALL_BREAK_POINT_COMMAND = (byte) 3;
+    public static final byte CLEAR_BREAK_POINT_COMMAND = (byte) 2;
 
 
 
