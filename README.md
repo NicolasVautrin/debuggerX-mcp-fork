@@ -1,5 +1,7 @@
 # DebuggerX
 
+[在线文档](https://zread.ai/wuou-learn/debuggerX/1-overview)
+
 # DebuggerX
 
 DebuggerX 是一个 Java 调试代理工具，支持多个调试器同时连接到同一个被调试程序，实现多人协同远程调试。通过 JDWP 协议转发，它可以让多个开发者在不同位置同时对一个 Java 应用进行调试，共享断点、变量查看等调试状态。
