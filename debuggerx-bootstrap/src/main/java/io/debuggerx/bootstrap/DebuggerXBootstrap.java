@@ -87,7 +87,7 @@ public class DebuggerXBootstrap {
 
         String debuggerProxyPort = System.getProperty(DebuggerConfig.Fields.debuggerProxyPort);
         if (StringUtils.isNotEmpty(debuggerProxyPort)) {
-            config.setJvmServerPort(Integer.parseInt(debuggerProxyPort));
+            config.setDebuggerProxyPort(Integer.parseInt(debuggerProxyPort));
         }
     }
 }
