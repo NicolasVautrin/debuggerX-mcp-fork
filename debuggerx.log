@@ -1,0 +1,37 @@
+02:25:10.466 [main] [34mINFO [0;39m i.d.b.http.BreakpointHttpServer - [HTTP] Breakpoint API server started on port 55006
+02:25:10.594 [main] [34mINFO [0;39m i.d.t.server.DebugProxyServer - [JvmClient] Attempting to connect to JVM at localhost:61959
+02:25:10.666 [main] [34mINFO [0;39m i.d.t.server.DebugProxyServer - [JvmClient] Successfully connected to JVM at localhost:61959
+02:25:10.688 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.t.codec.JdwpPacketDecoder - [DecodeHandShake] Handshake completed for channel: [id: 0x58d2beb8, L:/127.0.0.1:50789 - R:localhost/127.0.0.1:61959]
+02:26:20.948 [nioEventLoopGroup-3-1] [34mINFO [0;39m i.d.t.codec.JdwpPacketDecoder - [DecodeHandShake] Handshake completed for channel: [id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:20.949 [nioEventLoopGroup-3-1] [34mINFO [0;39m i.d.core.service.DebuggerService - [DebuggerHandShake] Debugger register to jvm server: /127.0.0.1:50868
+02:26:20.961 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:20.962 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:21.929 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:21.963 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:21.963 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.044 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.046 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.056 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.062 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.068 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.108 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=12 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.108 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.111 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.127 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=14 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.127 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.129 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.140 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=16 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.141 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.143 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.157 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=18 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.158 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.161 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.163 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.183 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=21 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.183 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.185 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.196 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=23 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.196 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.200 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients
+02:26:22.210 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.p.c.i.SetEventRequestReplyProcessor - [GlobalBreakpoint] Registered breakpoint requestId=25 from client=[id: 0xd48ffbb0, L:/127.0.0.1:55005 - R:/127.0.0.1:50868]
+02:26:22.211 [nioEventLoopGroup-4-1] [34mINFO [0;39m i.d.c.s.impl.JvmServerStrategy - [EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients

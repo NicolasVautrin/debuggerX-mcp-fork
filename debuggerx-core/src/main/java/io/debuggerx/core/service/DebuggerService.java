@@ -159,6 +159,14 @@ public class DebuggerService {
     private void mapResponseCommand(JdwpPacket packet) {
         DebugSession session = SessionManager.getInstance().findJvmServerSession();
         JdwpPacket originPacket = session.findPacketByNewId(packet.getHeader().getId());
+
+        // Guard against null for unexpected cases
+        if (originPacket == null) {
+            log.warn("[mapResponseCommand] No origin packet found for ID {}, cannot map command",
+                packet.getHeader().getId());
+            return;
+        }
+
         packet.getHeader().setCommandSet(originPacket.getHeader().getCommandSet());
         packet.getHeader().setCommand(originPacket.getHeader().getCommand());
     }
@@ -169,8 +177,14 @@ public class DebuggerService {
         }
 
         DebugSession session = sessionManager.findJvmServerSession();
-        requestIds.forEach(id ->
-                session.cacheRequestIdSourceChannel(id, source, packet)
-        );
+
+        // ALL JDWP events are global to the JVM and should be broadcast to ALL clients
+        // Register each requestId for ALL connected debugger clients
+        requestIds.forEach(id -> {
+            session.getDebuggerChannels().values().forEach(channel -> {
+                PacketSource clientSource = new PacketSource(source.getSourceType(), channel);
+                session.cacheRequestIdSourceChannel(id, clientSource, packet);
+            });
+        });
     }
 }

@@ -65,6 +65,11 @@ public class DebuggerXBootstrap {
             // 全局配置覆盖
             overrideConfig(config);
 
+            // Start HTTP API server (proxy port + 1)
+            io.debuggerx.bootstrap.http.BreakpointHttpServer httpServer =
+                new io.debuggerx.bootstrap.http.BreakpointHttpServer(config.getDebuggerProxyPort() + 1);
+            httpServer.start();
+
             // 创建并启动服务器
             DebugProxyServer server = new DebugProxyServer(config);
             server.start();

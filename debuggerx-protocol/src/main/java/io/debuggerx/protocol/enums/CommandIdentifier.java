@@ -53,7 +53,17 @@ public enum CommandIdentifier {
     /**
      * 复合事件命令
      */
-    COMPOSITE_EVENT_COMMAND(64, 100, COMMAND);
+    COMPOSITE_EVENT_COMMAND(64, 100, COMMAND),
+
+    /**
+     * ReferenceType.Signature reply - returns class signature
+     */
+    REFERENCE_TYPE_SIGNATURE_REPLY(2, 1, REPLY),
+
+    /**
+     * Method.LineTable reply - returns line number table for a method
+     */
+    METHOD_LINE_TABLE_REPLY(6, 1, REPLY);
 
     private final short commandSetId;
     private final short commandId;

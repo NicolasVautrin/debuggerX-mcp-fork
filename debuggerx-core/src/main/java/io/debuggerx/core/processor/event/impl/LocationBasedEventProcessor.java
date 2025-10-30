@@ -29,6 +29,7 @@ public class LocationBasedEventProcessor implements EventProcessor {
         //location	location	Location stepped to
         ThreadId threadId = ThreadId.read(buffer, idSizes);
         Location location = Location.read(buffer, idSizes);
+
         return Collections.singletonList(requestId);
     }
 }

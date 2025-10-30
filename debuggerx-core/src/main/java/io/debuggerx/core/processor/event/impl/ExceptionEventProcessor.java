@@ -29,6 +29,7 @@ public class ExceptionEventProcessor implements EventProcessor {
         Location.read(buffer, idSizes);
         TaggedObjectId.read(buffer, idSizes);
         Location.read(buffer, idSizes);
+
         return Collections.singletonList(requestId);
     }
 }

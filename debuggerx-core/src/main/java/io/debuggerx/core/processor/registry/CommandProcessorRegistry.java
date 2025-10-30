@@ -4,6 +4,8 @@ import io.debuggerx.core.processor.CommandProcessor;
 import io.debuggerx.core.processor.command.impl.ClearEventRequestCommandProcessor;
 import io.debuggerx.core.processor.command.impl.CompositeEventCommandProcessor;
 import io.debuggerx.core.processor.command.impl.IdSizesReplyProcessor;
+import io.debuggerx.core.processor.command.impl.MethodLineTableReplyProcessor;
+import io.debuggerx.core.processor.command.impl.ReferenceTypeSignatureReplyProcessor;
 import io.debuggerx.core.processor.command.impl.SetEventRequestReplyProcessor;
 import io.debuggerx.protocol.enums.CommandIdentifier;
 
@@ -21,6 +23,8 @@ public class CommandProcessorRegistry {
         register(CommandIdentifier.SET_EVENT_REQUEST_REPLY, new SetEventRequestReplyProcessor());
         register(CommandIdentifier.CLEAR_EVENT_REQUEST_COMMAND, new ClearEventRequestCommandProcessor());
         register(CommandIdentifier.COMPOSITE_EVENT_COMMAND, new CompositeEventCommandProcessor(eventProcessors));
+        register(CommandIdentifier.REFERENCE_TYPE_SIGNATURE_REPLY, new ReferenceTypeSignatureReplyProcessor());
+        register(CommandIdentifier.METHOD_LINE_TABLE_REPLY, new MethodLineTableReplyProcessor());
     }
 
     public void register(CommandIdentifier id, CommandProcessor processor) {

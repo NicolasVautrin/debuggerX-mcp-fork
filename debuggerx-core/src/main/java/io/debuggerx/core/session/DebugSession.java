@@ -71,6 +71,19 @@ public class DebugSession {
      */
     @Getter
     private final Map<Channel, Set<BreakpointRequestRelation>> breakpointRequestMap;
+    /**
+     * Global breakpoint registry - tracks ALL breakpoints from ALL clients
+     * key: requestId
+     * value: breakpoint details
+     */
+    @Getter
+    private final Map<Integer, io.debuggerx.protocol.packet.BreakpointInfo> globalBreakpoints;
+    /**
+     * Pending resolution queries - maps JDWP query packet ID to breakpoint requestId
+     * Used to update breakpoint info when resolution queries return
+     */
+    @Getter
+    private final Map<Integer, Integer> pendingResolutions;
 
     public DebugSession(Channel jvmServerChannel) {
         this.sessionId = SessionUtils.generateSessionId();
@@ -82,6 +95,8 @@ public class DebugSession {
         this.eventRequestIdSourceMap = new ConcurrentHashMap<>();
         this.packetMap = new ConcurrentHashMap<>();
         this.breakpointRequestMap = new ConcurrentHashMap<>();
+        this.globalBreakpoints = new ConcurrentHashMap<>();
+        this.pendingResolutions = new ConcurrentHashMap<>();
     }
 
     public void addDebugger(Channel debuggerChannel) {
@@ -138,6 +153,18 @@ public class DebugSession {
 
     public Set<PacketSource> findSourceChannelByRequestId(Integer requestId) {
         return eventRequestIdSourceMap.get(requestId);
+    }
+
+    /**
+     * Cache requestId for a specific channel WITHOUT replacing the source (for broadcasting)
+     */
+    public void cacheRequestIdForChannel(Integer requestId, PacketSource packetSource) {
+        eventRequestIdSourceMap.computeIfAbsent(requestId, id -> new CopyOnWriteArraySet<>());
+        Set<PacketSource> sourceChannels = eventRequestIdSourceMap.get(requestId);
+        if (sourceChannels.contains(packetSource)) {
+            return;
+        }
+        sourceChannels.add(packetSource);
     }
 
 }

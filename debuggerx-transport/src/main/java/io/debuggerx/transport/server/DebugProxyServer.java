@@ -57,11 +57,21 @@ public class DebugProxyServer {
 
     public ChannelFuture startJvmClient() throws InterruptedException {
         // 连接JVM
+        log.info("[JvmClient] Attempting to connect to JVM at {}:{}", config.getJvmServerHost(), config.getJvmServerPort());
         Bootstrap jvmClient = createClientBootstrap(jvmClientEventGroup);
         ChannelFuture jvmClientFuture = jvmClient.connect(config.getJvmServerHost(), config.getJvmServerPort()).sync();
 
+        if (jvmClientFuture.isSuccess()) {
+            log.info("[JvmClient] Successfully connected to JVM at {}:{}", config.getJvmServerHost(), config.getJvmServerPort());
+        } else {
+            log.error("[JvmClient] Failed to connect to JVM at {}:{} - {}",
+                config.getJvmServerHost(), config.getJvmServerPort(), jvmClientFuture.cause());
+        }
+
         // 只监听被调试程序的连接状态
-        jvmClientFuture.channel().closeFuture().addListener(future -> log.info("[JvmClient] disconnected, shutting down jvm client..."));
+        jvmClientFuture.channel().closeFuture().addListener(future -> {
+            log.info("[JvmClient] disconnected from JVM, shutting down jvm client...");
+        });
          return jvmClientFuture;
     }
 

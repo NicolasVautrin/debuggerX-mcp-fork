@@ -45,6 +45,27 @@ public class JdwpConstants {
      */
     public static final byte CLEAR_BREAK_POINT_COMMAND = (byte) 2;
 
+    /**
+     * ReferenceType command set
+     */
+    public static final byte REFERENCE_TYPE_COMMAND_SET = (byte) 2;
+    /**
+     * ReferenceType.Signature command
+     */
+    public static final byte REFERENCE_TYPE_SIGNATURE_COMMAND = (byte) 1;
+    /**
+     * ReferenceType.Methods command
+     */
+    public static final byte REFERENCE_TYPE_METHODS_COMMAND = (byte) 5;
+
+    /**
+     * Method command set
+     */
+    public static final byte METHOD_COMMAND_SET = (byte) 6;
+    /**
+     * Method.LineTable command
+     */
+    public static final byte METHOD_LINE_TABLE_COMMAND = (byte) 1;
 
 
 }
