@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 字段访问事件处理器
+ * Processes field watch events (FIELD_ACCESS, FIELD_MODIFICATION).
+ * Extracts field metadata, object reference, and new value for modifications.
  *
  * @author ouwu
  */

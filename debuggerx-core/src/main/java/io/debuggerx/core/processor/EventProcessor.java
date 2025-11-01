@@ -8,26 +8,29 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * 事件处理器
+ * Processes JDWP events and extracts request IDs for routing to debugger clients.
+ * Each implementation handles specific event types (breakpoint, step, exception, etc.).
  *
  * @author wuou
  */
 public interface EventProcessor {
 
     /**
-     * 是否支持特殊处理该事件类型
-     * @param eventKind 事件类型
-     * @return true - 处理 false - 不处理
+     * Determines if this processor handles the given event type.
+     *
+     * @param eventKind the JDWP event type
+     * @return true if this processor handles the event, false otherwise
      */
     boolean supports(EventKind eventKind);
 
     /**
-     * 处理事件
-     * @param buffer data
-     * @param idSizes idSizes
-     * @param eventKind eventKind
-     * @return requestIds
-     * @throws DebuggerException e
+     * Processes a JDWP event and extracts associated request IDs.
+     *
+     * @param buffer the data buffer containing event payload
+     * @param idSizes the JVM's ID size configuration
+     * @param eventKind the JDWP event type being processed
+     * @return list of request IDs extracted from the event
+     * @throws DebuggerException if event processing fails
      */
     List<Integer> processEvent(ByteBuffer buffer, IdSizes idSizes, EventKind eventKind) throws DebuggerException;
 }

@@ -14,7 +14,10 @@ import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Service for resolving breakpoint raw JDWP IDs to human-readable names
+ * Resolves breakpoint raw JDWP IDs (classId, methodId, codeIndex) to human-readable names.
+ * Sends asynchronous JDWP queries (ReferenceType.Signature, Method.LineTable) to populate
+ * className, methodName, and lineNumber fields for breakpoint tracking.
+ *
  * @author ouwu
  */
 @Slf4j
@@ -22,8 +25,10 @@ public class BreakpointResolver {
     private static final AtomicInteger packetIdGenerator = new AtomicInteger(100000);
 
     /**
-     * Asynchronously resolve breakpoint information
-     * Sends JDWP queries to get className, methodName, and lineNumber
+     * Asynchronously resolves breakpoint metadata via JDWP queries.
+     * Sends ReferenceType.Signature and Method.LineTable commands to populate human-readable fields.
+     *
+     * @param breakpointInfo the breakpoint to resolve (updated asynchronously when replies arrive)
      */
     public static void resolveBreakpoint(BreakpointInfo breakpointInfo) {
         try {
@@ -49,7 +54,11 @@ public class BreakpointResolver {
 
 
     /**
-     * Send ReferenceType.Signature command to get class signature
+     * Sends ReferenceType.Signature JDWP command to retrieve the class name.
+     *
+     * @param breakpointInfo the breakpoint being resolved
+     * @param jvmChannel the JVM connection channel
+     * @param session the debug session for tracking pending queries
      */
     private static void sendReferenceTypeSignatureQuery(BreakpointInfo breakpointInfo, Channel jvmChannel, DebugSession session) {
         try {
@@ -87,7 +96,11 @@ public class BreakpointResolver {
     }
 
     /**
-     * Send Method.LineTable command to get line number mapping
+     * Sends Method.LineTable JDWP command to retrieve line number mappings.
+     *
+     * @param breakpointInfo the breakpoint being resolved
+     * @param jvmChannel the JVM connection channel
+     * @param session the debug session for tracking pending queries
      */
     private static void sendMethodLineTableQuery(BreakpointInfo breakpointInfo, Channel jvmChannel, DebugSession session) {
         try {
@@ -127,7 +140,12 @@ public class BreakpointResolver {
     }
 
     /**
-     * Helper to write an ID with variable size
+     * Writes a JDWP ID (4 or 8 bytes) to a buffer based on JVM's ID size configuration.
+     *
+     * @param buffer the buffer to write to
+     * @param id the ID value
+     * @param size the ID size (4 or 8 bytes)
+     * @throws IllegalArgumentException if size is not 4 or 8
      */
     private static void writeId(ByteBuffer buffer, long id, int size) {
         switch (size) {

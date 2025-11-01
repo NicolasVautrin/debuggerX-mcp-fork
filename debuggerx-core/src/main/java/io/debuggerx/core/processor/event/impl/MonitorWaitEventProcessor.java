@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 等待事件处理器
+ * Processes monitor wait events (MONITOR_WAIT, MONITOR_WAITED).
+ * Extracts thread, monitor object, location, and timeout/timed_out flag.
+ *
  * @author ouwu
  */
 public class MonitorWaitEventProcessor implements EventProcessor {

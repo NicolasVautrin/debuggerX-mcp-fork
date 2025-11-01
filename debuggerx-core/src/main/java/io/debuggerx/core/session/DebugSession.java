@@ -19,7 +19,10 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * DebugSessionManager
+ * Represents a debug session connecting one JVM to multiple debugger clients.
+ * Manages packet ID mapping, request ID tracking, breakpoint registry, and event routing.
+ * Thread-safe for concurrent access from multiple debugger clients.
+ *
  * @author ouwu
  */
 @Data
@@ -110,9 +113,10 @@ public class DebugSession {
     }
     
     /**
-     * 移除调试器连接
-     * @param debuggerChannel 调试器通道
-     * @return 被移除的通道ID，如果未找到则返回null
+     * Removes a debugger client connection from this session.
+     *
+     * @param debuggerChannel the debugger channel to remove
+     * @return the removed channel ID, or null if not found
      */
     public String removeDebugger(Channel debuggerChannel) {
         String removedChannelId = null;
@@ -162,7 +166,11 @@ public class DebugSession {
     }
 
     /**
-     * Cache requestId for a specific channel WITHOUT replacing the source (for broadcasting)
+     * Caches a request ID for a specific channel without replacing existing sources.
+     * Used for broadcasting events to multiple debugger clients.
+     *
+     * @param requestId the JDWP request ID
+     * @param packetSource the packet source to associate with this request ID
      */
     public void cacheRequestIdForChannel(Integer requestId, PacketSource packetSource) {
         eventRequestIdSourceMap.computeIfAbsent(requestId, id -> new CopyOnWriteArraySet<>());
@@ -174,8 +182,10 @@ public class DebugSession {
     }
 
     /**
-     * Update the current breakpoint event (called when BREAKPOINT event is received)
-     * @param eventInfo Breakpoint event information
+     * Updates the current breakpoint event context (called when a BREAKPOINT event is received).
+     * Stores thread ID and breakpoint metadata for debugging and inspection.
+     *
+     * @param eventInfo the breakpoint event information (thread ID, breakpoint details)
      */
     public void setCurrentBreakpointEvent(io.debuggerx.protocol.packet.BreakpointEventInfo eventInfo) {
         this.currentBreakpointEvent = eventInfo;

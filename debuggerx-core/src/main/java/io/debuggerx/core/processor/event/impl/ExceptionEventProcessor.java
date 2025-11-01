@@ -12,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 异常事件处理器
+ * Processes EXCEPTION events from the JVM.
+ * Extracts thread, location, exception object, and catch location from event payload.
  *
  * @author ouwu
  */

@@ -9,7 +9,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * 处理器注册中心
+ * Registry for event processors mapped by EventKind.
+ * Auto-registers all event processors and provides lookup by event type.
  *
  * @author wuou
  */

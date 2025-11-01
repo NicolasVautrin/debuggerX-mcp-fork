@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Processes EventRequest.Clear commands to remove event requests.
+ * Extracts event kind and request ID from the command payload.
+ *
  * @author wuou
  */
 public class ClearEventRequestCommandProcessor implements CommandProcessor {

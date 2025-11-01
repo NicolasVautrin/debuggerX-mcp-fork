@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Processes JDWP composite events containing multiple event occurrences.
+ * Delegates individual event parsing to registered EventProcessors and aggregates request IDs.
+ *
  * @author wuou
  */
 @Slf4j

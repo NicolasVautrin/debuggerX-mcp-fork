@@ -9,6 +9,9 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
+ * Processes VirtualMachine.IDSizes reply to configure JVM ID size constants.
+ * Stores fieldID, methodID, objectID, referenceTypeID, and frameID sizes globally for packet parsing.
+ *
  * @author ouwu
  */
 public class IdSizesReplyProcessor implements CommandProcessor {

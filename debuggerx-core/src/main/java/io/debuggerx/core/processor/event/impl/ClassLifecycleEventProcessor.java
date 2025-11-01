@@ -12,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 类加载事件处理器
+ * Processes class lifecycle events (CLASS_PREPARE, CLASS_UNLOAD).
+ * Extracts request IDs and parses class metadata from event payloads.
  *
  * @author ouwu
  */

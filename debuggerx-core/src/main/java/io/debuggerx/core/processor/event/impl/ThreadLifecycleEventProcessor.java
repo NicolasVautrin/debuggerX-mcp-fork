@@ -10,7 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 线程生命周期事件处理器
+ * Processes thread lifecycle events (VM_START, THREAD_START, THREAD_DEATH).
+ * Extracts request ID and thread ID from event payload.
  *
  * @author ouwu
  */

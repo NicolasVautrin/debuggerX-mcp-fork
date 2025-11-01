@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Set;
 
 /**
+ * Handles packets from debugger clients (IntelliJ, Eclipse, MCP, etc.).
+ * Forwards commands to JVM and clears client breakpoints on disconnect.
+ *
  * @author ouwu
  */
 @Slf4j

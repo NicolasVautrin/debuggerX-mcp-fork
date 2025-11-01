@@ -23,8 +23,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 调试服务
- * 处理调试目标与调试器之间的通信
+ * Core debugging service that manages communication between the JVM and multiple debugger clients.
+ * Handles packet routing, request ID mapping, and event broadcasting to all connected debuggers.
+ * Implements singleton pattern for global access across the proxy.
  *
  * @author ouwu
  */
@@ -125,13 +126,12 @@ public class DebuggerService {
     }
 
     /**
-     * 只有与事件请求（Event Request）相关的命令和事件数据会包含 requestId
-     * 命令包包含
-     * 1. EventRequest：Command Set (15) Clear Command (2)
-     * 回复包包含
-     * 1. EventRequest：Command Set (15) Command (1)
-     * @param packetSource 数据包来源
-     * @param packet 数据包
+     * Caches request IDs from JDWP packets for event routing.
+     * Only event-related commands contain request IDs (e.g., EventRequest.Set, EventRequest.Clear).
+     * Request IDs are broadcast to all connected debugger clients for proper event distribution.
+     *
+     * @param packetSource the packet source (JVM or debugger client)
+     * @param packet the JDWP packet to process
      */
     public void cacheRequestId(PacketSource packetSource, JdwpPacket packet) {
         // 处理回复包的命令集映射

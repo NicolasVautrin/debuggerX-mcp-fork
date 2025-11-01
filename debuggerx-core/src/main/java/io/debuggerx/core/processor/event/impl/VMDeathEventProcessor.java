@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 虚拟机终止事件处理器
+ * Processes VM_DEATH event indicating JVM shutdown.
+ * Extracts only the request ID from the event.
  *
  * @author ouwu
  */

@@ -6,15 +6,18 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 /**
- * 命令包处理
+ * Processes JDWP command packets and extracts request IDs for event tracking.
+ * Implementations handle specific command types and parse their payloads.
+ *
  * @author ouwu
  */
 public interface CommandProcessor {
     /**
-     * 命令包处理
-     * @param byteBuffer data
-     * @param packet 数据包
-     * @return requestIds
+     * Processes a JDWP command packet and extracts associated request IDs.
+     *
+     * @param byteBuffer the data buffer containing command payload
+     * @param packet the JDWP packet being processed
+     * @return list of request IDs extracted from the command, or empty list if none
      */
     List<Integer> process(ByteBuffer byteBuffer, JdwpPacket packet);
 }

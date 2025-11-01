@@ -66,11 +66,10 @@ public class ReferenceTypeSignatureReplyProcessor implements CommandProcessor {
     }
 
     /**
-     * Parse JVM signature format to readable class name
-     * Examples:
-     * - "Ljava/lang/String;" -> "java.lang.String"
-     * - "[I" -> "int[]"
-     * - "Lcom/example/MyClass$Inner;" -> "com.example.MyClass$Inner"
+     * Converts JVM signature format to human-readable class name.
+     *
+     * @param signature the JVM signature (e.g., "Ljava/lang/String;")
+     * @return readable class name (e.g., "java.lang.String")
      */
     private String parseClassName(String signature) {
         if (signature.startsWith("L") && signature.endsWith(";")) {

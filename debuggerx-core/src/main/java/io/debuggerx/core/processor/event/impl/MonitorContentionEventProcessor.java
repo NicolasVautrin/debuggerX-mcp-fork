@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 监视器竞争事件处理器
+ * Processes monitor contention events (MONITOR_CONTENDED_ENTER, MONITOR_CONTENDED_ENTERED).
+ * Extracts thread, monitor object, and location from event payload.
+ *
  * @author ouwu
  */
 public class MonitorContentionEventProcessor implements EventProcessor {

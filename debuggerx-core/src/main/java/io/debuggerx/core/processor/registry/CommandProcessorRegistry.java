@@ -13,6 +13,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 /**
+ * Registry for command processors mapped by CommandIdentifier.
+ * Registers processors for ID sizes, event requests, composite events, and breakpoint resolution.
+ *
  * @author ouwu
  */
 public class CommandProcessorRegistry {

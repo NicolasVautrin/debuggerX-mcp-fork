@@ -20,6 +20,9 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
+ * Processes EventRequest.Set replies containing newly assigned request IDs.
+ * Registers breakpoints in the global registry and triggers asynchronous resolution of class/method names.
+ *
  * @author ouwu
  */
 @Slf4j
@@ -60,7 +63,13 @@ public class SetEventRequestReplyProcessor implements CommandProcessor {
     }
 
     /**
-     * Extract breakpoint details and store in global registry
+     * Extracts breakpoint location from EventRequest.Set command and stores in global registry.
+     * Initiates asynchronous resolution of className, methodName, and lineNumber.
+     *
+     * @param requestId the JDWP request ID assigned to this breakpoint
+     * @param originPacket the original EventRequest.Set command packet
+     * @param source the debugger client that set this breakpoint
+     * @param session the debug session
      */
     private void storeGlobalBreakpoint(int requestId, JdwpPacket originPacket, PacketSource source, DebugSession session) {
         try {

@@ -12,7 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 方法返回值事件处理器
+ * Processes METHOD_EXIT_WITH_RETURN_VALUE events.
+ * Extracts thread, location, and return value from method exits.
  *
  * @author ouwu
  */

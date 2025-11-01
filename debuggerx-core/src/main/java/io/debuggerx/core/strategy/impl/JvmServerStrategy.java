@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
+ * Handles packets from the JVM server.
+ * Broadcasts events and replies to all active debugger clients.
+ *
  * @author ouwu
  */
 @Slf4j
@@ -44,8 +47,14 @@ public class JvmServerStrategy implements ConnectionHandlerStrategy {
         this.broadcast(packet, collect.stream().map(PacketSource::getChannel).collect(Collectors.toList()));
     }
 
+    /**
+     * Broadcasts a message to multiple debugger clients.
+     * Only sends to active channels.
+     *
+     * @param msg the message to broadcast
+     * @param channels the list of debugger channels
+     */
     public void broadcast(Object msg, List<Channel> channels) {
-        // 只向活跃的channel发送
         channels.stream()
                 .filter(Channel::isActive)
                 .forEach(debuggerChannel -> {

@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * Processes location-based JDWP events (breakpoint, step, method entry/exit).
+ * For BREAKPOINT events, captures thread context and updates session state for inspection.
+ *
  * @author ouwu
  */
 @Slf4j

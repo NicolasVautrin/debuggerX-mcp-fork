@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 会话管理器
+ * Manages debug sessions across all JVM connections.
+ * Implements singleton pattern to provide global access to session state.
+ * Handles session lifecycle (creation, lookup, removal) and ID size configuration.
+ *
  * @author ouwu
  */
 @Slf4j
@@ -31,7 +34,10 @@ public class SessionManager {
     }
 
     /**
-     * 创建jvm服务端调试会话
+     * Creates a new debug session for a JVM server connection.
+     *
+     * @param jvmServerChannel the channel connected to the JVM
+     * @return the newly created debug session
      */
     public DebugSession createJvmServerSession(Channel jvmServerChannel) {
         DebugSession session = new DebugSession(jvmServerChannel);
@@ -49,16 +55,18 @@ public class SessionManager {
     }
 
     /**
-     * 找到jvm服务端调试会话
-     * @return 找到的会话，如果未找到则返回异常
+     * Finds the active JVM server debug session.
+     *
+     * @return the active debug session
+     * @throws DebuggerException if no session exists
      */
     public DebugSession findJvmServerSession() {
         return sessions.values().stream().findAny().orElseThrow(() -> new DebuggerException("No available jvm server session found"));
     }
 
     /**
-     * 关闭所有会话 (用于优雅关闭)
-     * Close all sessions (for graceful shutdown)
+     * Closes all debug sessions gracefully (used during proxy shutdown).
+     * Disconnects all debugger clients and JVM connections.
      */
     public void closeAllSessions() {
         log.info("[SessionManager] Closing all sessions ({} active)", sessions.size());
