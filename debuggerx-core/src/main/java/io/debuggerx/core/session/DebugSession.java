@@ -84,6 +84,12 @@ public class DebugSession {
      */
     @Getter
     private final Map<Integer, Integer> pendingResolutions;
+    /**
+     * Current breakpoint event (for Inspector injection and debugging)
+     * Updated whenever a BREAKPOINT event is received
+     */
+    @Getter
+    private volatile io.debuggerx.protocol.packet.BreakpointEventInfo currentBreakpointEvent;
 
     public DebugSession(Channel jvmServerChannel) {
         this.sessionId = SessionUtils.generateSessionId();
@@ -165,6 +171,21 @@ public class DebugSession {
             return;
         }
         sourceChannels.add(packetSource);
+    }
+
+    /**
+     * Update the current breakpoint event (called when BREAKPOINT event is received)
+     * @param eventInfo Breakpoint event information
+     */
+    public void setCurrentBreakpointEvent(io.debuggerx.protocol.packet.BreakpointEventInfo eventInfo) {
+        this.currentBreakpointEvent = eventInfo;
+        io.debuggerx.protocol.packet.BreakpointInfo bp = eventInfo.getBreakpoint();
+        log.info("[DebugSession] BREAKPOINT hit: threadId={}, requestId={}, {}:{} (line {})",
+            eventInfo.getThreadId(),
+            bp.getRequestId(),
+            bp.getClassName(),
+            bp.getMethodName(),
+            bp.getLineNumber());
     }
 
 }

@@ -66,9 +66,18 @@ public class DebuggerXBootstrap {
             overrideConfig(config);
 
             // Start HTTP API server (proxy port + 1)
-            io.debuggerx.bootstrap.http.BreakpointHttpServer httpServer =
-                new io.debuggerx.bootstrap.http.BreakpointHttpServer(config.getDebuggerProxyPort() + 1);
-            httpServer.start();
+            io.debuggerx.bootstrap.http.JdwpHttpServer httpServer =
+                new io.debuggerx.bootstrap.http.JdwpHttpServer(config.getDebuggerProxyPort() + 1);
+
+            try {
+                httpServer.start();
+            } catch (java.io.IOException e) {
+                log.error("[Bootstrap] HTTP server failed to start (port {} already in use?). Aborting proxy startup.",
+                    config.getDebuggerProxyPort() + 1);
+                log.error("[Bootstrap] To fix: Stop the process using port {} or change debuggerProxyPort configuration",
+                    config.getDebuggerProxyPort() + 1);
+                System.exit(1);
+            }
 
             // 创建并启动服务器
             DebugProxyServer server = new DebugProxyServer(config);

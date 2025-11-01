@@ -55,5 +55,34 @@ public class SessionManager {
     public DebugSession findJvmServerSession() {
         return sessions.values().stream().findAny().orElseThrow(() -> new DebuggerException("No available jvm server session found"));
     }
-    
+
+    /**
+     * 关闭所有会话 (用于优雅关闭)
+     * Close all sessions (for graceful shutdown)
+     */
+    public void closeAllSessions() {
+        log.info("[SessionManager] Closing all sessions ({} active)", sessions.size());
+        sessions.forEach((channel, session) -> {
+            try {
+                // Close all debugger connections
+                session.getDebuggerChannels().values().forEach(debuggerChannel -> {
+                    if (debuggerChannel.isActive()) {
+                        debuggerChannel.close();
+                    }
+                });
+
+                // Close JVM server channel
+                if (channel.isActive()) {
+                    channel.close();
+                }
+
+                log.info("[SessionManager] Closed session: {}", session.getSessionId());
+            } catch (Exception e) {
+                log.error("[SessionManager] Error closing session: {}", e.getMessage(), e);
+            }
+        });
+        sessions.clear();
+        log.info("[SessionManager] All sessions closed");
+    }
+
 }

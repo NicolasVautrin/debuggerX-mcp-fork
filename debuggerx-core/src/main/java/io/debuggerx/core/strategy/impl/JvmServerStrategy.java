@@ -41,27 +41,7 @@ public class JvmServerStrategy implements ConnectionHandlerStrategy {
             log.error("The reply channel is empty.");
             return;
         }
-
-        // Check if this is an EventRequest.Set reply (CommandSet=15, Command=1)
-        // If so, broadcast to ALL clients so they all register the breakpoint
-        if (isEventRequestSetReply(packet)) {
-            log.info("[EventRequestBroadcast] Broadcasting EventRequest.Set reply to all clients");
-            List<Channel> allChannels = session.getDebuggerChannels().values().stream()
-                .filter(Channel::isActive)
-                .collect(Collectors.toList());
-            this.broadcast(packet, allChannels);
-        } else {
-            // Normal behavior: send only to the requesting client
-            this.broadcast(packet, collect.stream().map(PacketSource::getChannel).collect(Collectors.toList()));
-        }
-    }
-
-    private boolean isEventRequestSetReply(JdwpPacket packet) {
-        // EventRequest command set = 15, Set command = 1
-        // Reply packets have the same command set/command as the request
-        return !packet.getHeader().isCommand() &&
-               packet.getHeader().getCommandSet() == 15 &&
-               packet.getHeader().getCommand() == 1;
+        this.broadcast(packet, collect.stream().map(PacketSource::getChannel).collect(Collectors.toList()));
     }
 
     public void broadcast(Object msg, List<Channel> channels) {

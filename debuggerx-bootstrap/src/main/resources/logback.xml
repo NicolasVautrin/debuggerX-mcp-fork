@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Enable Logback status messages for debugging -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+
+    <!-- Console appender for debugging -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+        <!-- No filter needed here for jdwp.packets as it's not additive -->
+    </appender>
+
+    <!-- File appender for internal proxy logs (all logs EXCEPT jdwp.packets) -->
+    <appender name="PROXY_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>debuggerx-proxy.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>debuggerx-proxy.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <!-- No filter needed here for jdwp.packets as it's not additive -->
+    </appender>
+
+    <!-- Root logger for everything else (non-packet logs) -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="PROXY_FILE" />
+    </root>
+</configuration>

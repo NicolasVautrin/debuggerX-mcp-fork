@@ -67,5 +67,57 @@ public class JdwpConstants {
      */
     public static final byte METHOD_LINE_TABLE_COMMAND = (byte) 1;
 
+    /**
+     * VirtualMachine command set
+     */
+    public static final byte VIRTUAL_MACHINE_COMMAND_SET = (byte) 1;
+    /**
+     * VirtualMachine.ClassesBySignature command
+     */
+    public static final byte CLASSES_BY_SIGNATURE_COMMAND = (byte) 2;
+    /**
+     * VirtualMachine.AllClasses command
+     */
+    public static final byte ALL_CLASSES_COMMAND = (byte) 3;
+    /**
+     * VirtualMachine.AllThreads command
+     */
+    public static final byte ALL_THREADS_COMMAND = (byte) 4;
+
+    /**
+     * ClassType command set
+     */
+    public static final byte CLASS_TYPE_COMMAND_SET = (byte) 3;
+    /**
+     * ClassType.InvokeMethod command
+     */
+    public static final byte CLASS_TYPE_INVOKE_METHOD_COMMAND = (byte) 3;
+
+    /**
+     * ObjectReference command set
+     */
+    public static final byte OBJECT_REFERENCE_COMMAND_SET = (byte) 9;
+    /**
+     * ObjectReference.InvokeMethod command
+     */
+    public static final byte OBJECT_REFERENCE_INVOKE_METHOD_COMMAND = (byte) 6;
+
+    /**
+     * ArrayType command set
+     */
+    public static final byte ARRAY_TYPE_COMMAND_SET = (byte) 4;
+    /**
+     * ArrayType.NewInstance command
+     */
+    public static final byte ARRAY_TYPE_NEW_INSTANCE_COMMAND = (byte) 1;
+
+    /**
+     * ArrayReference command set
+     */
+    public static final byte ARRAY_REFERENCE_COMMAND_SET = (byte) 13;
+    /**
+     * ArrayReference.SetValues command
+     */
+    public static final byte ARRAY_REFERENCE_SET_VALUES_COMMAND = (byte) 3;
 
 }

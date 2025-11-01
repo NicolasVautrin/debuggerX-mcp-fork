@@ -47,6 +47,7 @@ public class BreakpointResolver {
         }
     }
 
+
     /**
      * Send ReferenceType.Signature command to get class signature
      */
